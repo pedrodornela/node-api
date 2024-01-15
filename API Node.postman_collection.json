@@ -1,0 +1,501 @@
+{
+	"info": {
+		"_postman_id": "5817d80d-3299-41bf-98da-c39cb65597dd",
+		"name": "API Node",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27101740"
+	},
+	"item": [
+		{
+			"name": "API URI",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_BASE}}",
+					"host": [
+						"{{URL_BASE}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Customer General",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let password = pm.variables.replaceIn('{{$randomPassword}}');\r",
+							"let email = pm.variables.replaceIn('{{$randomEmail}}');\r",
+							"\r",
+							"postman.setGlobalVariable('PASSWORD', password);\r",
+							"postman.setGlobalVariable('EMAIL', email);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let idUser = pm.request.id;\r",
+							"postman.setGlobalVariable(\"ID_USER\", idUser);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"{{$randomFullName}}\",\r\n    \"email\": \"{{EMAIL}}\",\r\n    \"password\": \"{{PASSWORD}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_BASE}}/customers",
+					"host": [
+						"{{URL_BASE}}"
+					],
+					"path": [
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authenticate Customer",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"postman.setGlobalVariable(\"TOKEN\", jsonData.token);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{EMAIL}}\",\r\n    \"password\": \"{{PASSWORD}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_BASE}}/customers/authenticate",
+					"host": [
+						"{{URL_BASE}}"
+					],
+					"path": [
+						"customers",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh Token",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_BASE}}/customers/refresh-token",
+					"host": [
+						"{{URL_BASE}}"
+					],
+					"path": [
+						"customers",
+						"refresh-token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Product General",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var slug = \"{{$randomWord}}\";\r",
+							"postman.setGlobalVariable(\"SLUG\", slug);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"{{$randomProductName}}\",\r\n    \"description\": \"{{$randomProductAdjective}}\",\r\n    \"slug\": \"{{SLUG}}\",\r\n    \"price\": {{$randomPrice}},\r\n    \"active\": true,\r\n    \"tags\": [\"{{$randomProductAdjective}}\", \"{{$randomProductAdjective}}\",\r\n             \"{{$randomProductAdjective}}\", \"{{$randomProductAdjective}}\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_BASE}}/products",
+					"host": [
+						"{{URL_BASE}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Error Product Body",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"\",\r\n    \"description\": \"Mo\",\r\n    \"slug\": \"\",\r\n    \"price\": 120,\r\n    \"active\": true,\r\n    \"tags\": [\"informatica\",\"mouse\", \"games\"]\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_BASE}}/products",
+					"host": [
+						"{{URL_BASE}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product General",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"postman.setGlobalVariable(\"ID_PRODUCT\", jsonData[0]._id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_BASE}}/products",
+					"host": [
+						"{{URL_BASE}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product By Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_BASE}}/products/admin/{{ID_PRODUCT}}",
+					"host": [
+						"{{URL_BASE}}"
+					],
+					"path": [
+						"products",
+						"admin",
+						"{{ID_PRODUCT}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product By Slug",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_BASE}}/products/Chicken-RAM",
+					"host": [
+						"{{URL_BASE}}"
+					],
+					"path": [
+						"products",
+						"Chicken-RAM"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product By Tags",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_BASE}}/products/tags/Tasty",
+					"host": [
+						"{{URL_BASE}}"
+					],
+					"path": [
+						"products",
+						"tags",
+						"Tasty"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Product By Id",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"{{$randomProductName}}\",\r\n    \"description\": \"{{$randomProductAdjective}}\",\r\n    \"slug\": \"{{SLUG}}\",\r\n    \"price\": {{$randomPrice}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_BASE}}/products/{{ID_PRODUCT}}",
+					"host": [
+						"{{URL_BASE}}"
+					],
+					"path": [
+						"products",
+						"{{ID_PRODUCT}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Product By Id",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{ID_PRODUCT}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_BASE}}/products",
+					"host": [
+						"{{URL_BASE}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Order General",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"customer\": \"{{ID_USER}}\",\r\n    \"items\": [{\r\n        \"quantity\": {{$randomInt}},\r\n        \"price\": {{$randomPrice}},\r\n        \"product\":  \"{{ID_PRODUCT}}\"\r\n    }]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_BASE}}/orders",
+					"host": [
+						"{{URL_BASE}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Orders General",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_BASE}}/orders",
+					"host": [
+						"{{URL_BASE}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL_BASE",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}
